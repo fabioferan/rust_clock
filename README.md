@@ -16,12 +16,14 @@ Este projeto demonstra na prática:
 
 ## Estrutura do Código
 
+```plaintext
 src/main.rs
 ├── Args: struct com derive Parser para clap
 ├── cor_ansi: match para conversão de nome -> código ANSI
 ├── largura_visual: wrapper para unicode-width
 ├── linha_borda/linha_conteudo: funções puras de formatação
 └── main: loop principal com atualização periódica
+```
 
 ### Detalhes Técnicos
 
@@ -81,11 +83,11 @@ Observação: Com cargo run é necessário usar -- para separar flags do cargo d
 
 Cores aceitas: blue/azul, cyan/ciano, yellow/amarelo, white/branco, magenta/rosa, green/verde, red/vermelho.
 
-### Testes Unitários
+## Testes Unitários
 
 Rust possui suporte nativo a testes via atributo #[test]. Testes ficam no mesmo arquivo e são executados com cargo test.
 
-#### Executando testes
+### Executando testes
 
 ```bash
 cargo test
