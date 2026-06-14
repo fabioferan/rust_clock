@@ -16,7 +16,7 @@ Este projeto demonstra na prática:
 
 ## Estrutura do Código
 
-```plaintext
+```text
 src/main.rs
 ├── Args: struct com derive Parser para clap
 ├── cor_ansi: match para conversão de nome -> código ANSI

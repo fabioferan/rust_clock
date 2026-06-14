@@ -1,8 +1,8 @@
-use std::thread;
-use std::time::Duration;
-use std::io::{self, Write};
 use chrono::Local;
 use clap::Parser;
+use std::io::{self, Write};
+use std::thread;
+use std::time::Duration;
 use unicode_width::UnicodeWidthStr;
 
 const BG_BLUE: &str = "\x1b[44m";
@@ -19,7 +19,11 @@ const RESET: &str = "\x1b[0m";
 #[command(name = "rust_clock")]
 #[command(about = "Relógio ASCII customizável no terminal", long_about = None)]
 struct Args {
-    #[arg(long, default_value = "blue", help = "Cor de fundo: blue, cyan, yellow, white, magenta, green, red")]
+    #[arg(
+        long,
+        default_value = "blue",
+        help = "Cor de fundo: blue, cyan, yellow, white, magenta, green, red"
+    )]
     bg: String,
 
     #[arg(long, default_value = "cyan", help = "Cor da borda")]
@@ -44,19 +48,23 @@ fn cor_ansi(nome: &str) -> &str {
         "magenta" | "rosa" => MAGENTA,
         "green" | "verde" => GREEN,
         "red" | "vermelho" => RED,
-        _ => BG_BLUE
+        _ => BG_BLUE,
     }
 }
 
 fn mostrar_cores() {
-    println!("{bold}🎨 Cores disponíveis:{reset}\n", bold=BOLD, reset=RESET);
-    println!("{bg} blue/azul {reset}", bg=BG_BLUE, reset=RESET);
-    println!("{c} cyan/ciano {reset}", c=CYAN, reset=RESET);
-    println!("{y} yellow/amarelo {reset}", y=YELLOW, reset=RESET);
-    println!("{w} white/branco {reset}", w=WHITE, reset=RESET);
-    println!("{m} magenta/rosa {reset}", m=MAGENTA, reset=RESET);
-    println!("{g} green/verde {reset}", g=GREEN, reset=RESET);
-    println!("{r} red/vermelho {reset}\n", r=RED, reset=RESET);
+    println!(
+        "{bold}🎨 Cores disponíveis:{reset}\n",
+        bold = BOLD,
+        reset = RESET
+    );
+    println!("{bg} blue/azul {reset}", bg = BG_BLUE, reset = RESET);
+    println!("{c} cyan/ciano {reset}", c = CYAN, reset = RESET);
+    println!("{y} yellow/amarelo {reset}", y = YELLOW, reset = RESET);
+    println!("{w} white/branco {reset}", w = WHITE, reset = RESET);
+    println!("{m} magenta/rosa {reset}", m = MAGENTA, reset = RESET);
+    println!("{g} green/verde {reset}", g = GREEN, reset = RESET);
+    println!("{r} red/vermelho {reset}\n", r = RED, reset = RESET);
     println!("Ex: cargo run --bg magenta --borda cyan --texto white --hora yellow");
 }
 
@@ -71,14 +79,39 @@ fn largura_visual(s: &str) -> usize {
 fn linha_borda(largura: usize, tipo: &str, bg: &str, borda: &str) -> String {
     let linha = "═".repeat(largura);
     match tipo {
-        "topo" => format!("{bg}{borda}╔{linha}╗{reset}", bg=bg, borda=borda, linha=linha, reset=RESET),
-        "meio" => format!("{bg}{borda}╠{linha}╣{reset}", bg=bg, borda=borda, linha=linha, reset=RESET),
-        "base" => format!("{bg}{borda}╚{linha}╝{reset}", bg=bg, borda=borda, linha=linha, reset=RESET),
-        _ => String::new()
+        "topo" => format!(
+            "{bg}{borda}╔{linha}╗{reset}",
+            bg = bg,
+            borda = borda,
+            linha = linha,
+            reset = RESET
+        ),
+        "meio" => format!(
+            "{bg}{borda}╠{linha}╣{reset}",
+            bg = bg,
+            borda = borda,
+            linha = linha,
+            reset = RESET
+        ),
+        "base" => format!(
+            "{bg}{borda}╚{linha}╝{reset}",
+            bg = bg,
+            borda = borda,
+            linha = linha,
+            reset = RESET
+        ),
+        _ => String::new(),
     }
 }
 
-fn linha_conteudo(largura: usize, texto: &str, cor: &str, negrito: bool, bg: &str, borda: &str) -> String {
+fn linha_conteudo(
+    largura: usize,
+    texto: &str,
+    cor: &str,
+    negrito: bool,
+    bg: &str,
+    borda: &str,
+) -> String {
     let texto_len = largura_visual(texto);
     let espacos = (largura.saturating_sub(texto_len)) / 2;
     let espacos_fim = largura - espacos - texto_len;
@@ -154,7 +187,6 @@ fn largura_visual_conta_acentos_corretamente() {
     assert_eq!(largura_visual("São Paulo"), 9);
 }
 
-
 fn main() {
     let args = Args::parse();
 
@@ -169,7 +201,11 @@ fn main() {
     let cor_hora = cor_ansi(&args.hora);
 
     limpar_tela();
-    println!("{bold}💻 Terminal do Fabio{reset}", bold=BOLD, reset=RESET);
+    println!(
+        "{bold}💻 Terminal do Fabio{reset}",
+        bold = BOLD,
+        reset = RESET
+    );
     println!("Use --help pra ver todas as opções\n");
 
     let largura = 46;
@@ -189,22 +225,46 @@ fn main() {
             "│   CPU    │",
             "│  { } ;   │",
             "└──────────┘",
-            "Compilando tempo..."
+            "Compilando tempo...",
         ];
 
         println!("{}", linha_borda(largura, "topo", bg, cor_borda));
-        println!("{}", linha_conteudo(largura, titulo, WHITE, true, bg, cor_borda));
+        println!(
+            "{}",
+            linha_conteudo(largura, titulo, WHITE, true, bg, cor_borda)
+        );
         println!("{}", linha_borda(largura, "meio", bg, cor_borda));
 
         for linha in ascii_arte {
-            println!("{}", linha_conteudo(largura, linha, cor_texto, false, bg, cor_borda));
+            println!(
+                "{}",
+                linha_conteudo(largura, linha, cor_texto, false, bg, cor_borda)
+            );
         }
 
-        println!("{bg}{borda}║{esp}║{reset}", bg=bg, borda=cor_borda, esp=" ".repeat(largura), reset=RESET);
-        println!("{bg}{borda}║{linha}║{reset}", bg=bg, borda=cor_borda, linha="─".repeat(largura), reset=RESET);
+        println!(
+            "{bg}{borda}║{esp}║{reset}",
+            bg = bg,
+            borda = cor_borda,
+            esp = " ".repeat(largura),
+            reset = RESET
+        );
+        println!(
+            "{bg}{borda}║{linha}║{reset}",
+            bg = bg,
+            borda = cor_borda,
+            linha = "─".repeat(largura),
+            reset = RESET
+        );
 
-        println!("{}", linha_conteudo(largura, &data, WHITE, false, bg, cor_borda));
-        println!("{}", linha_conteudo(largura, &hora, cor_hora, true, bg, cor_borda));
+        println!(
+            "{}",
+            linha_conteudo(largura, &data, WHITE, false, bg, cor_borda)
+        );
+        println!(
+            "{}",
+            linha_conteudo(largura, &hora, cor_hora, true, bg, cor_borda)
+        );
 
         println!("{}", linha_borda(largura, "base", bg, cor_borda));
 
